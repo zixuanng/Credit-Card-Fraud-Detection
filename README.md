@@ -10,6 +10,7 @@ This project implements a fraud detection system using the Kaggle Credit Card Fr
 - **Multiple ML Models**: Logistic Regression, Random Forest, and XGBoost
 - **Imbalance Handling**: SMOTE, Random Under-sampling, and combined techniques
 - **Model Evaluation**: ROC-AUC, PR-AUC, Confusion Matrix, and more
+- **Prediction API**: Scripts to make predictions on new transactions
 
 ## Dataset
 
@@ -32,13 +33,36 @@ pip install -r requirements.txt
 
 ## Usage
 
-1. Open the Jupyter Notebook:
+### Option 1: Run the Jupyter Notebook
 
 ```bash
 jupyter notebook notebooks/fraud_detection.ipynb
 ```
 
-2. Run all cells to execute the complete analysis pipeline.
+Run all cells to execute the complete analysis pipeline.
+
+### Option 2: Make Predictions
+
+Use the prediction script to detect fraud in new transactions:
+
+```bash
+# Test with real data (10 legit + 10 fraud samples)
+python predict.py --test
+
+# Predict custom CSV file
+python predict.py --input your_transactions.csv
+
+# Run demo with sample data
+python predict.py --demo
+```
+
+### Option 3: Test the Model
+
+```bash
+python test_model.py
+```
+
+This runs comprehensive tests using the actual Kaggle dataset.
 
 ## Project Structure
 
@@ -48,22 +72,58 @@ credit-card-fraud-detection/
 ├── notebooks/
 │   └── fraud_detection.ipynb   # Main analysis notebook
 ├── outputs/
-│   ├── models/                 # Saved models
+│   ├── models/                 # Saved models (best_model.joblib)
 │   ├── plots/                  # Visualizations
 │   └── reports/                # Evaluation reports
+├── predict.py                  # Prediction script
+├── test_model.py               # Model testing script
 ├── requirements.txt            # Dependencies
 └── README.md                   # This file
 ```
 
 ## Key Results
 
-The notebook provides:
+### Model Performance (Best Model: Random Forest)
 
-- Class distribution analysis
-- Feature importance rankings
-- Model comparison table
-- Best model recommendation
-- Optimal threshold analysis
+| Metric    | Score  |
+| --------- | ------ |
+| Accuracy  | 99.94% |
+| Precision | 88.61% |
+| Recall    | 73.68% |
+| F1-Score  | 80.46% |
+| ROC-AUC   | 96.44% |
+| PR-AUC    | 76.71% |
+
+### Full Dataset Evaluation
+
+- True Positives: 459 (correctly detected fraud)
+- True Negatives: 284,258 (correctly identified legit)
+- False Positives: 57 (legit flagged as fraud)
+- False Negatives: 33 (missed fraud)
+
+## Making Predictions
+
+### Input Format
+
+Your CSV file should contain these 30 columns:
+
+- `Time`: Seconds elapsed since first transaction
+- `V1` to `V28`: PCA-transformed features (anonymized)
+- `Amount`: Transaction amount
+
+### Example Output
+
+```
+Results for 20 transactions:
+  Frauds detected: 10
+  Legitimate: 10
+
+Details:
+  Transaction 1: LEGIT (Actual: LEGIT) (fraud_prob=0.0012)
+  Transaction 2: LEGIT (Actual: LEGIT) (fraud_prob=0.0023)
+  ...
+  Transaction 15: FRAUD (Actual: FRAUD) (fraud_prob=0.9456)
+```
 
 ## Dependencies
 
@@ -75,6 +135,7 @@ The notebook provides:
 - matplotlib
 - seaborn
 - jupyter
+- kagglehub
 
 ## License
 
